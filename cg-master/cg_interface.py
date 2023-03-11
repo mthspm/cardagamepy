@@ -1,7 +1,6 @@
-import cg_login
-import client
 import tkinter as tk
 import pygame
+import client
 from PIL import Image, ImageTk
 
 LOGSIGIN_PATH = "imgs/logsigin.png"
@@ -11,7 +10,6 @@ BG_SOUND_PATH = "sounds/background_sound.mp3"
 
 audio = None
 mainWindow = None
-clientSocket: None
 
 # Carregando as funcoes principais da main window
 
@@ -33,6 +31,9 @@ class Audio:
         return pygame.mixer.music.get_busy()
 
 class SharedWindow():
+    def __init__(self) -> None:
+        global clientSocket
+
     def set_title(self,title):
         self.title(title)
 
@@ -55,7 +56,6 @@ class SharedWindow():
         button.place(relx=rx, rely=ry, anchor="center")
 
     def create_label(self,text,pady,rx,ry):
-
         label = tk.Label(self, text=text)
         label.pack(pady=pady)
         label.place(relx=rx, rely=ry, anchor="center")
@@ -65,6 +65,11 @@ class SharedWindow():
         entry.pack(pady=pady)
         entry.place(relx=rx, rely=ry, anchor="center")
         return entry
+
+    def create_label_checknet(self):
+        label = tk.Label(self,'NO CONNECTION WITH SERVER',5,0.5,0.2)
+        label.pack(5)
+
 
 class MainWindow(tk.Tk, SharedWindow):
 
@@ -78,15 +83,13 @@ class MainWindow(tk.Tk, SharedWindow):
         self.loginInstancia = LoginWindow()
         self.signinInstancia = SigninWindow()
 
-        #BUTTONS
-        self.create_button('Login', self.show_login_window, 0, 0.5, 0.52)
-        self.create_button('Sign In', self.show_signin_window, 0, 0.5, 0.62)
-
         #INTERFACE SETUP
     def initialize_interface(self):
         self.set_title("Login & Sign-IN for CG")
         self.load_resolution(1024, 1020)
         self.load_background(LOGSIGIN_PATH)
+        self.create_button('Login', self.show_login_window, 0, 0.5, 0.52)
+        self.create_button('Sign In', self.show_signin_window, 0, 0.5, 0.62)
 
     def check_song(self):
         if self.audio.is_playing():
@@ -115,7 +118,6 @@ class LoginWindow(tk.Toplevel, SharedWindow):
         self.set_title("Login for CG")
         self.load_resolution(1024, 1020)
         self.load_background(LOGIN_PATH)
-
         #BUTTONS
         self.create_label('Username', 5, 0.5, 0.50)
         self.username = self.create_entry(5, 0.5, 0.525)
@@ -146,7 +148,6 @@ class SigninWindow(tk.Toplevel, SharedWindow):
         self.set_title("SignIn for CG")
         self.load_resolution(1024,1020)
         self.load_background(SIGIN_PATH)
-
         self.create_label('Username',5,0.5,0.505)
         self.username = self.create_entry(5,0.5,0.53)
         self.create_label("Password",5,0.5,0.555)
@@ -166,15 +167,8 @@ class SigninWindow(tk.Toplevel, SharedWindow):
         mainWindow.deiconify()
 
 def main():
-    global audio, mainWindow, clientSocket
+    global audio, mainWindow
+
     audio = Audio()
-    clientSocket = client.SocketConnection(client.HAMACHI_IPV4, client.PORT)
-    connection = clientSocket.connect()
-
-    if connection:
-        mainWindow = MainWindow(audio)
-        mainWindow.mainloop()
-    else:
-        pass
-
-main()
+    mainWindow = MainWindow(audio)
+    mainWindow.mainloop()
