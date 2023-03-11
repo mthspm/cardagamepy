@@ -1,7 +1,8 @@
 import tkinter as tk
 import pygame
-import client as client_module
+from client import Client
 from PIL import Image, ImageTk
+import threading
 
 LOGSIGIN_PATH = "imgs/logsigin.png"
 SIGIN_PATH = "imgs/sigin.png"
@@ -10,11 +11,25 @@ BG_SOUND_PATH = "sounds/background_sound.mp3"
 
 audio = None
 mainWindow = None
-client = client_module.Client()
-client.connect()
 
-# Carregando as funcoes principais da main window
+# Carregando uma thread que vai gerenciar o client
+class ClientThread(threading.Thread):
+    def __init__(self, on_connect, on_disconnect, on_message):
+        super().__init__()
+        self.client = Client()
+        self.client.on_connect = on_connect
+        self.client.on_disconnect = on_disconnect
+        self.client.on_message = on_message
+        self.stop_event = threading.Event()
 
+    def run(self):
+        while not self.stop_event.is_set():
+            self.client.connect()
+            self.stop_event.wait(1)
+
+    def stop(self):
+        self.stop_event.set()
+# Class audio que controla o audio
 class Audio:
     def __init__(self) -> None:
         pygame.mixer.init()
@@ -31,7 +46,7 @@ class Audio:
 
     def is_playing(self):
         return pygame.mixer.music.get_busy()
-
+# Carregando as funcoes principais da main window
 class SharedWindow():
     def __init__(self) -> None:
         pass
@@ -80,8 +95,9 @@ class MainWindow(tk.Tk, SharedWindow):
         self.audio = audio
         super().__init__(*args, **kwargs)
         self.initialize_interface()
-        self.check_song()
-
+        #self.check_song()
+        self.client_thread = ClientThread(self.on_connect, self.on_disconnect, self.on_message)
+        self.client_thread.start()
         self.loginInstancia = LoginWindow()
         self.signinInstancia = SigninWindow()
 
@@ -100,12 +116,26 @@ class MainWindow(tk.Tk, SharedWindow):
             self.audio.play_sound(BG_SOUND_PATH)
 
     def show_login_window(self):
+
         self.withdraw()
         self.loginInstancia.deiconify()
     
     def show_signin_window(self):
         self.withdraw()
         self.loginInstancia.deiconify()
+
+    def on_connect(self):
+        pass
+
+    def on_disconnect(self):
+        pass
+
+    def on_message(self, message):
+        pass
+
+    def close(self):
+        self.client_thread.stop()
+
 
 class LoginWindow(tk.Toplevel, SharedWindow):
 
@@ -170,7 +200,9 @@ class SigninWindow(tk.Toplevel, SharedWindow):
 
 def main():
     global audio, mainWindow
-
     audio = Audio()
     mainWindow = MainWindow(audio)
+
     mainWindow.mainloop()
+
+main()
