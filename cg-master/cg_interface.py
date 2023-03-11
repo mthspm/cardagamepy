@@ -1,6 +1,6 @@
 import tkinter as tk
 import pygame
-import client
+import client as client_module
 from PIL import Image, ImageTk
 
 LOGSIGIN_PATH = "imgs/logsigin.png"
@@ -10,6 +10,8 @@ BG_SOUND_PATH = "sounds/background_sound.mp3"
 
 audio = None
 mainWindow = None
+client = client_module.Client()
+client.connect()
 
 # Carregando as funcoes principais da main window
 
@@ -32,7 +34,7 @@ class Audio:
 
 class SharedWindow():
     def __init__(self) -> None:
-        global clientSocket
+        pass
 
     def set_title(self,title):
         self.title(title)

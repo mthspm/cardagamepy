@@ -1,64 +1,66 @@
 import websocket
 import json
-import asyncio
+import socket
 
-HOST = "25.66.46.176"
-PORT = 8765
+class Client:
+    #Parametros que inicializam com a classe
+    def __init__(self, host="25.66.46.176", port=8765):
+        self.hostname = socket.gethostname()
+        self.host = host
+        self.port = port
 
-def on_open(ws):
-    data = json.dumps({'type': 'login', 'username': 'teste', 'password': 'teste'})
-    ws.send(data)
-    print('login request sended')
+    #Funcao connect que de fato conecta o objeto ao server
+    def connect(self):
+        self.ws = websocket.WebSocketApp(
+            f"ws://{self.host}:{self.port}",
+            on_open=self.on_open,
+            on_message=self.on_message,
+            on_error=self.on_error,
+            on_close=self.on_close
+        )
+        self.ws.run_forever()
 
-def on_message(ws, message):
-    # parse the message as JSON
-    data = json.loads(message)
+    #Funcao que executa imediatamente quando o client eh conectado ao servidor
+    def on_open(self, ws):
+        data = json.dumps({'type': 'on_message', 'username': self.hostname})
+        ws.send(data)
 
-    # get the message type
-    message_type = data.get("type")
+    #Funcao que trata qualquer data recebida pelo servidor
+    #a data recebida passa por 'handler_functions' que filtra
+    #pelo type dos dados recebidos o que fazer com o dado
+    def on_message(self, ws, message):
+        # parse the message as JSON
+        data = json.loads(message)
 
-    # map message types to their corresponding handler functions
-    handler_functions = {
-        'login': handle_login,
-        "func2": 'handle_func2',
-    }
+        # get the message type
+        message_type = data.get("type")
 
-    # call the appropriate handler function for the message type
-    handler_function = handler_functions.get(message_type)
-    if handler_function is not None:
-        handler_function(data)
-    else:
-        print("Unhandled event:", message_type)
+        # map message types to their corresponding handler functions
+        handler_functions = {
+            'login': self.handle_login,
+            'func2': self.handle_func2,
+            'on_open': self.handle_on_open,
+        }
+        # call the appropriate handler function for the message type
+        handler_function = handler_functions.get(message_type)
+        if handler_function is not None:
+            handler_function(data)
+        else:
+            print(f"Unhandled event for user '{self.hostname}': {message_type}")
 
-# define a function to handle the "welcome" message
-def handle_login(data):
-    print("Received login response:", data)
 
-# define a function to handle the "goodbye" message
-def handle_signin(data):
-    print("Received goodbye message:", data)
+    #Funcoes que tratam os dados recebidos de acordo com seu type.
+    def handle_on_open(self, data):
+        print(f"Conectado ao servidor com sucessso! -> Feedback do servidor '{self.hostname}': {data}")
 
-# define a function to handle connection errors
-def on_error(ws, error):
-    print("WebSocket error:", error)
+    def handle_login(self, data):
+        print(f"Received login response for user '{self.hostname}': {data}")
 
-# define a function to handle disconnection from the server
-def on_close(ws, close_status_code, close_msg):
-    print("WebSocket disconnected")
+    def handle_func2(self, data):
+        print(f"Received func2 message for user '{self.hostname}': {data}")
 
-ws = websocket.WebSocketApp( 
-        f"ws://{HOST}:{PORT}",
-        on_open = on_open,
-        on_message = on_message,
-        on_error = on_error,
-        on_close = on_close
-    )
+    def on_error(self, ws, error):
+        print(f"WebSocket error for user '{self.hostname}': {error}")
 
-loop = asyncio.new_event_loop()
-try:
-    loop.run_until_complete(ws.run_forever())
-except KeyboardInterrupt:
-    pass
-finally:
-    loop.run_until_complete(loop.shutdown_asyncgens())
-    loop.close()
+    def on_close(self, ws):
+        print(f"WebSocket disconnected for user '{self.hostname}'")

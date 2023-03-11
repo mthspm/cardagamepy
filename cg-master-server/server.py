@@ -28,8 +28,9 @@ async def handle_connection(websocket, path, callbacks):
                 await callbacks['error'](websocket, f"Invalid message type: {message_type}")
 
 # Define callback functions for handling incoming messages
-async def handle_ping(websocket, data):
-    await websocket.send(json.dumps({'type': 'pong'}))
+async def handle_on_message(websocket, data):
+    print(f'client conectado {data}')
+    await websocket.send(json.dumps({'type': 'on_open'}))
 
 async def handle_login(websocket, data):
     print(data);
@@ -47,7 +48,7 @@ async def start_server(host, port, callbacks):
 callbacks = {
     'connection': handle_connection,
     'login': handle_login,
-    'ping': handle_ping,
+    'on_message': handle_on_message,
 }
 
 # Start the WebSocket server
