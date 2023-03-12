@@ -43,11 +43,8 @@ async def handle_login(websocket, data):
     time = utils.timeNow()
     user = data.get('user')       
     password = data.get('password')
-
     feedback = cg_login.login(user,password)
-
     await websocket.send(json.dumps({'type': 'login', 'data': feedback}))
-
     print(f'[{time}] Attempt login from: {user} {password}')
 
 async def handle_signin(websocket, data):

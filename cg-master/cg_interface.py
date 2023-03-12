@@ -1,9 +1,11 @@
 import tkinter as tk
+from tkinter import messagebox
 import pygame
 from client import Client
 from PIL import Image, ImageTk
 import threading
 import json
+import time
 
 LOGSIGIN_PATH = "imgs/logsigin.png"
 SIGIN_PATH = "imgs/sigin.png"
@@ -141,7 +143,6 @@ class MainWindow(tk.Tk, SharedWindow):
                 self.checknet.destroy()
 
     def show_login_window(self):
-
         self.withdraw()
         self.loginInstancia.deiconify()
     
@@ -179,6 +180,13 @@ class LoginWindow(tk.Toplevel, SharedWindow):
         user,pw = self.username.get(),self.password.get()
         data = {'user':user, 'password':pw}
         self.client_thread.client.send_data('login', data)
+        time.sleep(0.5)
+        feedback = self.client_thread.client.conectionstatus
+        
+        if feedback:
+            messagebox.showinfo("Conexao estabelecida", "Login efetuado com sucesso!")
+        else:
+            messagebox.showerror("Falha na autenticacao","Usuario ou senha incorreto!")
 
         return user,pw
 
@@ -214,6 +222,14 @@ class SigninWindow(tk.Toplevel, SharedWindow):
         user,pw,pwConfirm = self.username.get(),self.password.get(),self.password_validate.get()
         data = {'user':user, 'password':pw, 'passwordconfirm':pwConfirm}
         self.client_thread.client.send_data('signin', data)
+        time.sleep(0.5)
+        feedback = self.client_thread.client.registerstatus
+
+        if feedback:
+            messagebox.showinfo("Conexao estabelecida", "Cadastro realizado com sucesso!")
+        else:
+            messagebox.showerror("Falha na autenticacao","Username ja em uso ou formato invalido de username/password!")
+
         return user,pw,pwConfirm
 
     def back_to_start(self):
@@ -227,7 +243,4 @@ def main():
     audio = Audio()
     mainWindow = MainWindow(audio)
     
-
     mainWindow.mainloop()
-
-main()

@@ -1,3 +1,5 @@
 # Iniciar loop de eventos principal
+import cg_interface
+
 if __name__ == '__main__':
-    pass
+    cg_interface.main()

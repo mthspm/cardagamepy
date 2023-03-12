@@ -8,6 +8,8 @@ class Client:
         self.hostname = socket.gethostname()
         self.host = host
         self.port = port
+        self.conectionstatus = False
+        self.registerstatus = False
 
     #Funcao connect que de fato conecta o objeto ao server
     def connect(self):
@@ -58,8 +60,6 @@ class Client:
         else:
             print(f"type not on scope of 'handler_functions' event for user '{self.hostname}': {message_type}")
 
-    #Funcoes que tratam os dados recebidos de acordo com seu type.
-
     def add_callback(self, type, callback):
         self.handler_functions[type] = callback;
 
@@ -73,12 +73,16 @@ class Client:
         print(f"Received login response for user '{self.hostname}': {data}")
         if data.get('data') is True:
             print('login aprovado')
+            self.conectionstatus = True
         else:
             print('login reprovado')
+            self.conectionstatus = False
 
     def handle_signin(self, data):
         print(f"Received signin message for user '{self.hostname}': {data}")
         if data.get('data') is True:
             print('registro aprovado')
+            self.registerstatus = True
         else:
             print('registro reprovado')
+            self.registerstatus = False
