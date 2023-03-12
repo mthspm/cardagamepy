@@ -92,6 +92,10 @@ class SharedWindow():
         entry.place(relx=rx, rely=ry, anchor="center")
         return entry
 
+    def clear_entry(self,entrys):
+        for entry in entrys:
+            entry.delete(0, tk.END)
+
     def create_label_checknet(self):
         label = tk.Label(self, text='Sem conexao com o servidor! Verifique os logs')
         label.pack(pady=5)
@@ -176,10 +180,10 @@ class LoginWindow(tk.Toplevel, SharedWindow):
         data = {'user':user, 'password':pw}
         self.client_thread.client.send_data('login', data)
 
-        #clientconnection.sendEvent('auth', username, password)
         return user,pw
 
     def back_to_start(self):
+        self.clear_entry([self.username,self.password])
         self.withdraw()
         global mainWindow
         mainWindow.deiconify()
@@ -213,6 +217,7 @@ class SigninWindow(tk.Toplevel, SharedWindow):
         return user,pw,pwConfirm
 
     def back_to_start(self):
+        self.clear_entry([self.username,self.password,self.password_validate])
         self.withdraw()
         global mainWindow
         mainWindow.deiconify()
