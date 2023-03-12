@@ -33,16 +33,19 @@ class Client:
     def check_connection(self):
         return self.ws.sock and self.ws.sock.connected
 
-    def send_loginAttempt(self,ws,username,password):
-        data = json.dump({'type': 'loginAttempt', 'user': username, 'pw': password})
-        self.ws.send(data)
+    def send_data(self, type, data):
+        if self.ws.sock and self.ws.sock.connected:
+            data = json.dumps({'type': type, 'data': data})
+            self.ws.send(data.encode())
+        else:
+            print("failed on login attempt : 'no response from server'.")
 
     def on_message(self, ws, message):
         data = json.loads(message)
         message_type = data.get("type")
         handler_functions = {
             'login': self.handle_login,
-            'func2': self.handle_func2,
+            'signin': self.handle_signin,
             'on_close': self.handle_on_close,
             'error': self.on_error,
         }
@@ -60,8 +63,8 @@ class Client:
     def handle_login(self, data):
         print(f"Received login response for user '{self.hostname}': {data}")
 
-    def handle_func2(self, data):
-        print(f"Received func2 message for user '{self.hostname}': {data}")
+    def handle_signin(self, data):
+        print(f"Received signin message for user '{self.hostname}': {data}")
 
     def on_error(self, ws, error):
         print(f"WebSocket error for user '{self.hostname}': {error}")

@@ -25,7 +25,7 @@ def singin(user,pw,pw_confirm):
     else:
         return False
 
-    cursor.execute("SELECT * FROM users WHERE username = ?", (user,))
+    cursor.execute("SELECT * FROM users WHERE username = ? COLLATE NOCASE", (user,))
 
     user_feedback = cursor.fetchone()
 

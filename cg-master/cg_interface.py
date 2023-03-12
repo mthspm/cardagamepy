@@ -3,6 +3,7 @@ import pygame
 from client import Client
 from PIL import Image, ImageTk
 import threading
+import json
 
 LOGSIGIN_PATH = "imgs/logsigin.png"
 SIGIN_PATH = "imgs/sigin.png"
@@ -32,12 +33,9 @@ class Audio:
 
 # Carregando uma thread que vai gerenciar o client
 class ClientThread(threading.Thread):
-    def __init__(self, on_connect, on_disconnect, on_message):
+    def __init__(self):
         super().__init__()
         self.client = Client()
-        self.client.on_connect = on_connect
-        self.client.on_disconnect = on_disconnect
-        self.client.on_message = on_message
         self.stop_event = threading.Event()
 
     def run(self):
@@ -55,7 +53,7 @@ class SharedWindow():
         pass
 
     def start_thread(self):
-            self.client_thread = ClientThread(self.on_connect, self.on_disconnect, self.on_message)
+            self.client_thread = ClientThread()
             self.client_thread.start()
             return self.client_thread
 
@@ -120,7 +118,7 @@ class MainWindow(tk.Tk, SharedWindow):
         self.load_background(LOGSIGIN_PATH)
         self.create_button('Login', self.show_login_window, 0, 0.5, 0.52)
         self.create_button('Sign In', self.show_signin_window, 0, 0.5, 0.62)
-        self.create_button('Refresh', self.refresh,0,0.5,0.15)
+        self.create_button('Refresh', self.refresh,0,0.5,0.72)
         if self.client_thread.client.check_connection() is not True:
             self.checknet = self.create_label_checknet()
 
@@ -147,15 +145,6 @@ class MainWindow(tk.Tk, SharedWindow):
         self.withdraw()
         self.signinInstancia.deiconify()
 
-    def on_connect(self):
-        pass
-
-    def on_disconnect(self):
-        pass
-
-    def on_message(self, message):
-        pass
-
     def close(self):
         self.client_thread.stop()
 
@@ -179,11 +168,14 @@ class LoginWindow(tk.Toplevel, SharedWindow):
         self.username = self.create_entry(5, 0.5, 0.525)
         self.create_label('Password', 5, 0.5, 0.55)
         self.password = self.create_entry(5, 0.5, 0.575)
-        self.create_button('Login', self.receive_data_login, 10,0.5,0.625)
+        self.create_button('Login', self.send_data_login, 10,0.5,0.625)
         self.create_button('Don`t have account? Back to start!', self.back_to_start, 10, 0.5, 0.95)
 
-    def receive_data_login(self):
+    def send_data_login(self):
         user,pw = self.username.get(),self.password.get()
+        data = {'user':user, 'password':pw}
+        self.client_thread.client.send_data('login', data)
+
         #clientconnection.sendEvent('auth', username, password)
         return user,pw
 
@@ -211,11 +203,13 @@ class SigninWindow(tk.Toplevel, SharedWindow):
         self.password = self.create_entry(5,0.5,0.58)
         self.create_label("Confirm Password",5,0.5,0.61)
         self.password_validate = self.create_entry(5,0.5,0.64)
-        self.create_button("Register",self.receive_data_signin,10,0.5,0.69)
+        self.create_button("Register",self.send_data_signin,10,0.5,0.69)
         self.create_button("Already have an account? Back to start here!",self.back_to_start,10,0.5,0.95)
 
-    def receive_data_signin(self):
+    def send_data_signin(self):
         user,pw,pwConfirm = self.username.get(),self.password.get(),self.password_validate.get()
+        data = {'user':user, 'password':pw, 'passwordconfirm':pwConfirm}
+        self.client_thread.client.send_data('signin', data)
         return user,pw,pwConfirm
 
     def back_to_start(self):
