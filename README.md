@@ -2,19 +2,15 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-
- This is a card game built in Python.
- 
-
-# Description
+## Description
 The Card Game is a game initially based on Hearthstone/Yugioh to model its logic, but in its visual and algorithmic elements it has followed its own path of authenticity. The game runs only in multiplayer and depends on a server running to accept user connections in a login/registration access control system and managing the events of matches that are running in the game.
 
 The main inspiration for the project is to learn and develop more programming skills.
 
-# Installation
-To install the Card Game, you will need Python 3. You can download the latest version of Python from the official website here.
+## Installation
+To install the Card Game, you will need Python 3. You can download the latest version of Python from the [official website](https://www.python.org/downloads/) here.
 
-## Installation Step-by-Step
+### Installation Step-by-Step
 
 1. Ensure that you have Python 3 installed on your computer. If you do not already have Python 3 installed, you can download it from the official website [here](https://www.python.org/downloads/).
 
@@ -35,10 +31,10 @@ git clone https://github.com/<username>/<repository-name>.git
 pip install -r requirements.txt
 ```
 
-# Usage
+## Usage
 To start playing the Card Game, simply run the main.py file in your Python environment. **Note that during the testing phase, the setup of the scripts may be scrambled. If you encounter any issues, please refer to the README file for troubleshooting steps, or contact the developer for assistance.
 
-## Usage Step-by-Step
+You are almost there!
 
 1. Navigate to the directory of the Card Game in your command prompt.
 
@@ -48,11 +44,11 @@ To start playing the Card Game, simply run the main.py file in your Python envir
 python main.py
 ```
 
-# Contributing
+## Contributing
 If you would like to contribute to the Card Game project, please fork the repository and submit a pull request. We welcome all contributions, including bug fixes and new features.
 
-# License
-The Card Game is licensed under the MIT License. See the LICENSE file for more information.
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-# Credits
+## Credits
 The Card Game is been developed by mths and ookiton. Special thanks to mr korllan.
