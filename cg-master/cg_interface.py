@@ -12,23 +12,6 @@ BG_SOUND_PATH = "sounds/background_sound.mp3"
 audio = None
 mainWindow = None
 
-# Carregando uma thread que vai gerenciar o client
-class ClientThread(threading.Thread):
-    def __init__(self, on_connect, on_disconnect, on_message):
-        super().__init__()
-        self.client = Client()
-        self.client.on_connect = on_connect
-        self.client.on_disconnect = on_disconnect
-        self.client.on_message = on_message
-        self.stop_event = threading.Event()
-
-    def run(self):
-        while not self.stop_event.is_set():
-            self.client.connect()
-            self.stop_event.wait(1)
-
-    def stop(self):
-        self.stop_event.set()
 # Class audio que controla o audio
 class Audio:
     def __init__(self) -> None:
@@ -46,13 +29,39 @@ class Audio:
 
     def is_playing(self):
         return pygame.mixer.music.get_busy()
+
+# Carregando uma thread que vai gerenciar o client
+class ClientThread(threading.Thread):
+    def __init__(self, on_connect, on_disconnect, on_message):
+        super().__init__()
+        self.client = Client()
+        self.client.on_connect = on_connect
+        self.client.on_disconnect = on_disconnect
+        self.client.on_message = on_message
+        self.stop_event = threading.Event()
+
+    def run(self):
+        while not self.stop_event.is_set():
+            self.client.connect()
+            self.stop_event.wait(1)
+
+    def stop(self):
+        self.stop_event.set()
+
 # Carregando as funcoes principais da main window
 class SharedWindow():
     def __init__(self) -> None:
+        self.client_thread = None
         pass
+
+    def start_thread(self):
+            self.client_thread = ClientThread(self.on_connect, self.on_disconnect, self.on_message)
+            self.client_thread.start()
+            return self.client_thread
 
     def set_title(self,title):
         self.title(title)
+        return title
 
     def load_background(self, image):
         self.img_background = ImageTk.PhotoImage(file=image)
@@ -71,11 +80,13 @@ class SharedWindow():
         button = tk.Button(self, text=text, font=("Arial",20), command=command)
         button.pack(pady=pady)
         button.place(relx=rx, rely=ry, anchor="center")
+        return button
 
     def create_label(self,text,pady,rx,ry):
         label = tk.Label(self, text=text)
         label.pack(pady=pady)
         label.place(relx=rx, rely=ry, anchor="center")
+        return label
 
     def create_entry(self,pady,rx,ry):
         entry = tk.Entry(self)
@@ -84,9 +95,10 @@ class SharedWindow():
         return entry
 
     def create_label_checknet(self):
-        label = tk.Label(self,'NO CONNECTION WITH SERVER',5,0.5,0.2)
-        label.pack(5)
-
+        label = tk.Label(self, text='Sem conexao com o servidor! Verifique os logs')
+        label.pack(pady=5)
+        label.place(relx=0.5, rely=0.015, anchor="center")
+        return label
 
 class MainWindow(tk.Tk, SharedWindow):
 
@@ -94,12 +106,12 @@ class MainWindow(tk.Tk, SharedWindow):
     def __init__(self, audio: Audio, *args, **kwargs):
         self.audio = audio
         super().__init__(*args, **kwargs)
+        self.client_thread = self.start_thread()
+        self.checknet = None
         self.initialize_interface()
         #self.check_song()
-        self.client_thread = ClientThread(self.on_connect, self.on_disconnect, self.on_message)
-        self.client_thread.start()
-        self.loginInstancia = LoginWindow()
-        self.signinInstancia = SigninWindow()
+        self.loginInstancia = LoginWindow(self.client_thread)
+        self.signinInstancia = SigninWindow(self.client_thread)
 
         #INTERFACE SETUP
     def initialize_interface(self):
@@ -108,12 +120,23 @@ class MainWindow(tk.Tk, SharedWindow):
         self.load_background(LOGSIGIN_PATH)
         self.create_button('Login', self.show_login_window, 0, 0.5, 0.52)
         self.create_button('Sign In', self.show_signin_window, 0, 0.5, 0.62)
+        self.create_button('Refresh', self.refresh,0,0.5,0.15)
+        if self.client_thread.client.check_connection() is not True:
+            self.checknet = self.create_label_checknet()
 
     def check_song(self):
         if self.audio.is_playing():
             pass
         else:
             self.audio.play_sound(BG_SOUND_PATH)
+
+    def refresh(self):
+        if not self.client_thread.client.check_connection():
+            if not self.checknet or not self.checknet.winfo_exists():
+                self.checknet = self.create_label_checknet()
+        else:
+            if self.checknet and self.checknet.winfo_exists():
+                self.checknet.destroy()
 
     def show_login_window(self):
 
@@ -122,7 +145,7 @@ class MainWindow(tk.Tk, SharedWindow):
     
     def show_signin_window(self):
         self.withdraw()
-        self.loginInstancia.deiconify()
+        self.signinInstancia.deiconify()
 
     def on_connect(self):
         pass
@@ -140,9 +163,10 @@ class MainWindow(tk.Tk, SharedWindow):
 class LoginWindow(tk.Toplevel, SharedWindow):
 
     #START
-    def __init__(self, *args, **kwargs):
+    def __init__(self, client_thread, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.initialize_interface()
+        self.client_thread = client_thread
         self.withdraw()
         
     def initialize_interface(self):
@@ -170,9 +194,10 @@ class LoginWindow(tk.Toplevel, SharedWindow):
 
 class SigninWindow(tk.Toplevel, SharedWindow):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, client_thread, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.initializeInterface()
+        self.client_thread = client_thread
         self.withdraw()
 
     def initializeInterface(self):
@@ -202,6 +227,7 @@ def main():
     global audio, mainWindow
     audio = Audio()
     mainWindow = MainWindow(audio)
+    
 
     mainWindow.mainloop()
 

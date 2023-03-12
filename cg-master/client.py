@@ -27,12 +27,15 @@ class Client:
         self.ws.send(data)
 
     def on_close(self, ws, close_status, close_reason):
-        print(f"WebSocket '{self.hostname}' disconnected for user with status {close_status} and reason '{close_reason}'")
         data = json.dumps({'type': 'on_close', 'status': close_status, 'reason': close_reason})
         self.ws.send(data)
 
-    def check_connection(self, ws):
+    def check_connection(self):
         return self.ws.sock and self.ws.sock.connected
+
+    def send_loginAttempt(self,ws,username,password):
+        data = json.dump({'type': 'loginAttempt', 'user': username, 'pw': password})
+        self.ws.send(data)
 
     def on_message(self, ws, message):
         data = json.loads(message)
