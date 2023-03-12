@@ -8,7 +8,8 @@ The Card Game is a game initially based on Hearthstone/Yugioh to model its logic
 The main inspiration for the project is to learn and develop more programming skills.
 
 ## Installation
-To install the Card Game, you will need Python 3. You can download the latest version of Python from the [official website](https://www.python.org/downloads/) here.
+To install the Card Game, you will need Python 3. You can download the latest version of Python from the [Python official website](https://www.python.org/downloads/) here.
+During the alpha phase, the game server is hosted on a local network using Hamachi for testing purposes. Make sure you have Hamachi installed and connected to the network [Hamachi official website](https://vpn.net/) here.
 
 ### Installation Step-by-Step
 
