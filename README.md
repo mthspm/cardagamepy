@@ -1,6 +1,7 @@
 # CG-MASTER
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 
 ## Description
 The Card Game is a game initially based on Hearthstone/Yugioh to model its logic, but in its visual and algorithmic elements it has followed its own path of authenticity. The game runs only in multiplayer and depends on a server running to accept user connections in a login/registration access control system and managing the events of matches that are running in the game.
