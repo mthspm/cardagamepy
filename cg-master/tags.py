@@ -1,0 +1,44 @@
+class CardType():
+	"""TAG_CARDTYPE"""
+
+	INVALID = 0
+	GAME = 1
+	PLAYER = 2
+	HERO = 3
+	MINION = 4
+	SPELL = 5
+	WEAPON = 7
+	ITEM = 8
+	TOKEN = 9
+	HERO_POWER = 10
+	BLANK = 11
+	GAME_MODE_BUTTON = 12
+	MOVE_MINION_HOVER_TARGET = 22
+	LETTUCE_ABILITY = 23
+	LOCATION = 39
+
+class Zone():
+	"""TAG_ZONE"""
+
+	INVALID = 0
+	SETASIDE = 1
+	DECK = 2
+	HAND = 3
+	GRAVEYARD = 4
+
+class PlayState():
+	"""TAG_PLAYSTATE"""
+
+	INVALID = 0
+	PLAYING = 1
+	WINNING = 2
+	LOSING = 3
+	WON = 4
+	LOST = 5
+	TIED = 6
+	DISCONNECTED = 7
+	CONCEDED = 8
+
+	# Renamed in 10833
+	QUIT = CONCEDED
+

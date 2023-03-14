@@ -176,7 +176,11 @@ class LoginWindow(tk.Toplevel, SharedWindow):
         self.create_button('Login', self.send_data_login, 10,0.5,0.625)
         self.create_button('Don`t have account? Back to start!', self.back_to_start, 10, 0.5, 0.95)
 
+    def clear_login_entry(self):
+        self.clear_entry([self.username,self.password])
+
     def send_data_login(self):
+        self.clear_login_entry()
         user,pw = self.username.get(),self.password.get()
         data = {'user':user, 'password':pw}
         self.client_thread.client.send_data('login', data)
@@ -191,7 +195,7 @@ class LoginWindow(tk.Toplevel, SharedWindow):
         return user,pw
 
     def back_to_start(self):
-        self.clear_entry([self.username,self.password])
+        self.clear_login_entry()
         self.withdraw()
         global mainWindow
         mainWindow.deiconify()
@@ -218,7 +222,12 @@ class SigninWindow(tk.Toplevel, SharedWindow):
         self.create_button("Register",self.send_data_signin,10,0.5,0.69)
         self.create_button("Already have an account? Back to start here!",self.back_to_start,10,0.5,0.95)
 
+    def clear_signin_entry(self):
+        self.clear_entry([self.username,self.password,self.password_validate])
+
+
     def send_data_signin(self):
+        self.clear_signin_entry()
         user,pw,pwConfirm = self.username.get(),self.password.get(),self.password_validate.get()
         data = {'user':user, 'password':pw, 'passwordconfirm':pwConfirm}
         self.client_thread.client.send_data('signin', data)
@@ -233,7 +242,7 @@ class SigninWindow(tk.Toplevel, SharedWindow):
         return user,pw,pwConfirm
 
     def back_to_start(self):
-        self.clear_entry([self.username,self.password,self.password_validate])
+        self.clear_signin_entry()
         self.withdraw()
         global mainWindow
         mainWindow.deiconify()

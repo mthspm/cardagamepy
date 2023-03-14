@@ -1,0 +1,28 @@
+##CARD GAME BACKEND ROADMAP
+
+Definir as regras básicas do jogo: Antes de começar a codificar, é importante definir as regras básicas do jogo. Isso inclui o número de jogadores,
+ o objetivo do jogo, a mecânica do turno, como as cartas são jogadas, o uso de mana, etc.
+                        
+Modelar as cartas do jogo: Em seguida, é necessário modelar as cartas do jogo. Cada carta deve ter atributos como nome, tipo, custo de mana, 
+ataque, defesa e efeitos especiais. As cartas também podem ser agrupadas em diferentes conjuntos, cada um com suas próprias mecânicas.
+
+Criar as classes de jogadores: Cada jogador deve ser representado por uma classe que mantém informações como o nome do jogador, o baralho que
+ ele está usando, o número de cartas na mão e o número de pontos de vida. A classe também deve ter métodos para as ações que um jogador pode realizar,
+  como comprar uma carta, jogar uma carta ou atacar com um personagem.
+
+Implementar a mecânica do turno: O jogo deve ter uma mecânica de turno, em que os jogadores alternam entre jogadas. Cada turno deve permitir
+ que o jogador realize várias ações, como jogar cartas, atacar com personagens e usar habilidades especiais. O turno deve terminar quando
+  o jogador não tem mais ações disponíveis ou decide passar a vez.
+
+Implementar a inteligência artificial: Se o jogo tiver um modo para um jogador, é necessário criar uma inteligência artificial para o oponente.
+ A IA deve ser capaz de jogar cartas, usar habilidades especiais e atacar com personagens de acordo com uma estratégia definida. Isso pode incluir
+  a escolha da melhor carta para jogar com base no contexto atual do jogo.
+
+Adicionar as animações: Para tornar o jogo mais envolvente, é possível adicionar animações às jogadas, como as cartas que se movem da pilha para a mão
+ do jogador ou personagens que atacam outros personagens. As animações também podem ajudar a comunicar ao jogador o que está acontecendo no jogo.
+
+Testar e refinar: Uma vez que o jogo esteja funcionando, é importante testar para encontrar bugs e problemas de equilíbrio. Ajustes podem ser feitos
+ na mecânica do jogo e nas cartas para melhorar a jogabilidade e a experiência geral do usuário.
+
+Adicionar recursos adicionais: Finalmente, é possível adicionar recursos adicionais ao jogo, como um sistema de classificação, um modo multiplayer
+ online ou um editor de deck para os jogadores criarem seus próprios baralhos personalizados.
