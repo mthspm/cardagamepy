@@ -16,18 +16,29 @@ class Deck:
             return self.cards
 
     def build(self,package):
-        for card in range(len(package)):
-            self.cards.append(card)
+        if self.validation(package):
+            for card in package:
+                self.cards.append(card)
+        else:
+            return
 
     def destroy(self):
         self.cards.clear()
 
-    def add(self,card):
-        self.cards.append(card)
+    def add(self,card,position):
+        rnd_pos = random.randint(0,len(self.cards))
+        if position == 'end':
+            self.cards.append(card)
+        elif position == 'random':
+            self.cards.index(rnd_pos,card)
+        elif position == 'start':
+            self.cards.insert(0,card)
+        else:
+            return
 
-    def add_multiple(self,package):
+    def add_multiple(self,package,position):
         for card in package:
-            self.add(card)
+            self.add(card,position)
 
     def remove(self,card):
         self.cards.remove(card)
@@ -35,12 +46,12 @@ class Deck:
     def shuffle(self):
         random.shuffle(self.cards)
 
-    def validation(self):
+    def validation(self,deck):
         valid_card_types = ['common', 'rare', 'epic', 'legendary']
         name_counts = {}
         legendary_counts = {}
 
-        for card in self.cards:
+        for card in deck:
             if card.type in valid_card_types:
                 if card.type == 'legendary':
                     legendary_counts[card.name] = legendary_counts.get(card.name, 0) + 1

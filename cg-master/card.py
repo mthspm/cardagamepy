@@ -30,34 +30,33 @@ class BaseCard:
         self._set_zone(value)
 
     def _set_zone(self, value):
+        """
+        __sumary__
+        value == target to place the card
 
-        old = self.zone
+        [Deck <-> Hand <-> BOARD <-> GRAVEYARD <-> ...]
+        __end__
+        """
+
+        old = self._zone
 
         if old == value:
             return
 
-        """
-        value == target to place the card
-
-        [Deck <-> Hand <-> BOARD <-> GRAVEYARD <-> ...]
-        """
         zones = {
-            Zone.HAND: 'funcao pra ir pra mao',
-            Zone.DECK: '...',
-			Zone.GRAVEYARD: '...',
-			Zone.SETASIDE: '...',
+            Zone.HAND: 'funcao que mostra a mao',
+            Zone.DECK: 'funcao que mostra o deck',
+			Zone.GRAVEYARD: 'funcao que mostra o cemiterio',
+			Zone.SETASIDE: 'funcao que coloca uma carta em campo',
         }
 
-        self._zone = value
-
         if zones.get(old) is not None:
-            zones[old].remove(self)
+            'tira a carta da zona'
 
+        if zones.get(value) is not None:
+            'coloca a carta na zona nova'
 
-
-
-    
-
+        self._zone = value
 
 class MinionCard(BaseCard):
 

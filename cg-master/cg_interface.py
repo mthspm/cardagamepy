@@ -113,7 +113,7 @@ class MainWindow(tk.Tk, SharedWindow):
         self.client_thread = self.start_thread()
         self.checknet = None
         self.initialize_interface()
-        #self.check_song()
+        self.check_song()
         self.loginInstancia = LoginWindow(self.client_thread)
         self.signinInstancia = SigninWindow(self.client_thread)
 
