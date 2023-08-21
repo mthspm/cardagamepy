@@ -56,4 +56,4 @@ If you would like to contribute to the Card Game project, please fork the reposi
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Credits
-The Card Game is been developed by mths and ookiton. Special thanks to mr korllan.
+The Card Game is been developed by mths and ookiton. Special thanks to jleclanche and mr korllan.
